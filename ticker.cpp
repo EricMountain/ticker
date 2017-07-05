@@ -70,8 +70,6 @@ void tick(int interval_ms)
                       << ", tick_delta = " << tick_delta_ns << "ns "
                       << (warn ? "WARNING" : "OK")
                       << std::endl;
-            //clock_states[clock].tv_sec = current->tv_sec;
-            //clock_states[clock].tv_nsec = current->tv_nsec;
             clock_states.erase(clock);
         }
         clock_states[clock] = *current;
