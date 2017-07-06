@@ -33,15 +33,18 @@ void resolutions()
 void do_sleep(int interval_ms) {
     struct timespec sleep = { interval_ms / 1000, (interval_ms % 1000) * 1000000 };
     while (1) {
-        int nano_res = nanosleep(&sleep, &sleep);
-        if (nano_res == 0) {
+        if (nanosleep(&sleep, &sleep) != 0) {
+            switch(errno) {
+            case EINTR:
+                std::cerr << "My sleep was disturbed, trying again" << std::endl;
+                continue;
+            default:
+                std::cerr << "nanosleep error (" << errno << "): " << std::strerror(errno) << std::endl;
+                exit(1);
+            }
+        } else {
             return;
         }
-        if (errno == EINVAL) {
-            std::cerr << "nanosleep EINVAL: " << std::strerror(errno) << std::endl;
-            exit(1);
-        }
-        std::cerr << "My sleep was disturbed, trying again" << std::endl;
     }
 }
 
